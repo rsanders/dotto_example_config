@@ -1,0 +1,94 @@
+#!/bin/zsh
+
+emulate zsh
+
+ZSH_THEME=${ZSH_THEME:-rsbox}
+
+# ZSH_PREFS_USER=${ZSH_PREFS_USER:-rsanders}
+
+uselib themes rsutils
+
+# dotto_disabled_components+=(ohmyzsh)
+
+### for debugging
+# setopt XTRACE VERBOSE
+
+###############
+
+export EDITOR=vi
+
+bindkey -me 2>/dev/null
+
+umask 022
+IGNOREEOF=0
+
+# 20 MB coredump limit
+ulimit -c 20000
+
+# adding c makes scrolling faster, but it always takes the
+# whole screen
+export LESS="efiMqR"
+export PAGER=less
+
+export BLOCKSIZE=1024
+export LINES COLUMNS
+
+HISTSIZE=400
+
+# export PATH DISPLAY LESS TERM PS1 PS2 ignoreeof
+# export XDVIFONTS=/usr/local/lib/tex/fonts/cm/%f.%p
+# export FONTS_DIR=/usr/lib/X11/misc
+# export LPDEST=hp1200d
+# export TERMCAP
+
+export GROFF_TYPESETTER=ascii
+
+# set up terminal defaults	
+stty echoe susp ^z intr ^c lnext undef kill undef werase undef start undef stop undef erase '^?'
+
+# set up completion magic
+hosts=(turok test.zeevex.com prod.zeevex.com monitor.zeevex.com schultz.dreamhost.com minimus-2.local)
+
+# ZSH options
+setopt nolistbeep autolist nonomatch noclobber
+unsetopt menucomplete 
+
+# Directory stuff.
+setopt AUTO_NAME_DIRS
+
+# Speed stuff.
+setopt AUTO_CD
+setopt MULTIOS
+setopt CDABLEVARS
+
+if [ "`uname -s`" = "FreeBSD" -a "$TERM" = "vt100" ]; then
+	export TERM="vt100-color"
+fi
+
+if [ "$TERM" = "screen" -o "$TERM" = "vt100-color" -o "$TERM" = "vt100" ]; then
+	# export TERM=vt100
+	DO_COLOR=yes
+fi
+
+export LSCOLORS="Gxfxcxdxbxegedabagacad"
+export CLICOLOR=true
+
+# if on the console, alias ls to cls (color ls)
+if [ "$TERM" = "console" -o "$TERM" = "xterm" -o "X$DO_COLOR" = "Xyes" -o "$TERM" = "vt100" -o "$TERM" = "screen" -o "$TERM" = "xterm-color" ]
+then
+	#which colorls > /dev/null 2> /dev/null
+	if [ "`uname -s`" = Linux ];  then
+		# GNU generation, baby
+		alias ls='ls --color=auto'
+	fi
+fi
+
+
+stty erase '^?'
+
+# get that BASH-like "> file" behavior
+noeolecho() { echo -n }
+NULLCMD=noeolecho
+
+
+
